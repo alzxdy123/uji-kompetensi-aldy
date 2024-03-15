@@ -2,12 +2,18 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import dashboard from "./components/dashboard.vue";
 import login from "./components/login.vue";
+import home from "./components/home.vue";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
     path: "/",
+    name: "home",
+    component: home,
+  },
+  {
+    path: "/dashboard",
     name: "dashboard",
     component: dashboard,
   },
@@ -27,7 +33,6 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const publicPages = ["/login"];
   const authRequired = !publicPages.includes(to.path);
-  // let token = localStorage.getItem("token");
   if (authRequired) {
     return next({
       path: "/login",
