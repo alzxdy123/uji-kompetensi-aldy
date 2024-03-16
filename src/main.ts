@@ -5,12 +5,14 @@ import store from "./store";
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "jam-icons/css/jam.min.css";
 import VeeValidate from "vee-validate";
+import Notifications from "vue-notification";
 // import { Validator } from "vee-validate";
 
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
+Vue.use(Notifications);
 Vue.use(VeeValidate, {
   // fieldsBagName: 'vvFields',
   inject: true,

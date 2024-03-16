@@ -1,3 +1,4 @@
+import { computed } from "vue";
 import Crypto from "../tools/crypto";
 
 class FunctionService {
@@ -33,8 +34,62 @@ class FunctionService {
     return result;
   }
 
-  ValidationResponseBoolean(data: any) {
-    return data.data.code === "00";
+  ResultResponse(data: any) {
+    let result = false;
+    switch (data.data.code) {
+      case "00":
+        result = true;
+        break;
+      case "70":
+        result = false;
+        break;
+      case "71":
+        result = false;
+        break;
+    }
+
+    return result;
+  }
+
+  SimpleLanguage(message: string) {
+    let language = localStorage.getItem("locale");
+    if (language == null) {
+      language = "id";
+    }
+    try {
+      if (message.indexOf("|") > -1) {
+        if (language == "id") {
+          return this.GetTextLeft(message);
+        } else if (language == "en") {
+          return this.GetTextRight(message);
+        } else {
+          return "Bahasa tidak di temukan";
+        }
+      } else {
+        return message;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  GetTextLeft(text: string) {
+    try {
+      var TextLeft = text.substr(0, text.indexOf("|"));
+      return TextLeft;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  GetTextRight(text: string) {
+    try {
+      const TextRight = text.slice(text.indexOf("|") - text.length);
+      const RemoveCharacter = TextRight.replace("|", "");
+      return RemoveCharacter;
+    } catch (e) {
+      return e;
+    }
   }
 }
 
