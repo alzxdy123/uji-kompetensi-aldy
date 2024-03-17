@@ -1,4 +1,4 @@
-import { computed } from "vue";
+import router from "@/router";
 import Crypto from "../tools/crypto";
 
 class FunctionService {
@@ -90,6 +90,13 @@ class FunctionService {
     } catch (e) {
       return e;
     }
+  }
+
+  ToPage(page: string) {
+    this.SaveSessionCustom("page", page);
+    return router.replace(page).catch((error) => {
+      return error;
+    });
   }
 }
 

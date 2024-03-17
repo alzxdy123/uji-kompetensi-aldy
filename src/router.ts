@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import dashboard from "./components/dashboard.vue";
 import login from "./components/login.vue";
 import home from "./components/home.vue";
+import holidayParameter from "./components/holiday-parameter.vue";
 
 Vue.use(VueRouter);
 
@@ -11,11 +12,18 @@ const routes: Array<RouteConfig> = [
     path: "/",
     name: "home",
     component: home,
-  },
-  {
-    path: "/dashboard",
-    name: "dashboard",
-    component: dashboard,
+    children: [
+      {
+        path: "/dashboard",
+        name: "dashboard",
+        component: dashboard,
+      },
+      {
+        path: "/holiday-parameter",
+        name: "holidayParameter",
+        component: holidayParameter,
+      },
+    ],
   },
   {
     path: "/login",
@@ -30,19 +38,19 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const publicPages = ["/login"];
-  const authRequired = !publicPages.includes(to.path);
-  if (authRequired) {
-    return next({
-      path: "/login",
-      query: {
-        returnUrl: to.path,
-      },
-    });
-  } else {
-    next();
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   const publicPages = ["/login"];
+//   const authRequired = !publicPages.includes(to.path);
+//   if (authRequired) {
+//     return next({
+//       path: "/login",
+//       query: {
+//         returnUrl: to.path,
+//       },
+//     });
+//   } else {
+//     next();
+//   }
+// });
 
 export default router;

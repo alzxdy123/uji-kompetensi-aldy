@@ -162,5 +162,5 @@ export default {
 </script>
 
 <style scoped>
-@import "../assets/scss/global.scss";
+@import "../assets/scss/login.scss";
 </style>
