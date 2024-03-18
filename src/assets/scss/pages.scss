@@ -1,7 +1,6 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .dashboard {
@@ -82,5 +81,111 @@
         font-size: 20px;
       }
     }
+  }
+}
+
+.container-holiday-parameter {
+  .holiday-parameter {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    height: max-content;
+    background-color: white;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    .wrappers {
+      width: 95%;
+      height: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      
+      .header {
+        width: 100%;
+        height: 10%;
+        font-size: 20px;
+        font-weight: bold;
+      }
+  
+      .body {
+        width: 100%;
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: start;
+  
+        .table {
+          width: 100%;
+
+          .table-content {
+            text-align: center;
+            cursor: pointer;
+            font-size: 15px;
+          }
+        }
+      }
+
+      .footer {
+        width: 100%;
+        height: 10%;
+        display: flex;
+        justify-content: end;
+
+        .page{
+          width: 200px;
+        }
+
+        .page .page-item.active .page-link {
+          background-color: black;
+          color: white; /* Set text color for better visibility */
+        }
+      }
+    }
+  }
+
+  .tambah-data-container {
+    margin-top: 30px;
+    width: 100%;
+    height: 250px;
+
+    .tambah-data-head {
+      width: 100%;
+      height: 60px;
+      background-color: white;
+      display: flex;
+      gap: 70px;
+      justify-content: start;
+      align-items: center;
+      padding-left: 30px;
+      box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+
+      span {       
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      button {
+        padding: 3px 50px 3px 50px;
+        background-color: black;
+        color: white;
+      }
+    }
+
+    .tambah-data-body {
+      width: 100%;
+      height: 70px;
+      margin-top: 10px;
+    }
+  }
+  
+  .add-holiday-parameter {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+    display: flex;
   }
 }

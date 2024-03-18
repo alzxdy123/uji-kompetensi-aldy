@@ -7,6 +7,7 @@ import "jam-icons/css/jam.min.css";
 import VeeValidate from "vee-validate";
 import Notifications from "vue-notification";
 // import { Validator } from "vee-validate";
+import "./assets/scss/init.scss";
 
 Vue.config.productionTip = false;
 

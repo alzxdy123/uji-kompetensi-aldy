@@ -3,7 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import dashboard from "./components/dashboard.vue";
 import login from "./components/login.vue";
 import home from "./components/home.vue";
-import holidayParameter from "./components/holiday-parameter.vue";
+import holidayParameter from "./components/holidayParameter.vue";
 
 Vue.use(VueRouter);
 

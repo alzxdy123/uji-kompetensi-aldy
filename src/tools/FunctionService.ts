@@ -1,5 +1,6 @@
 import router from "@/router";
 import Crypto from "../tools/crypto";
+import jwt_decode from "jwt-decode";
 
 class FunctionService {
   SaveSessionCustom(key: string, value: any) {
@@ -97,6 +98,26 @@ class FunctionService {
     return router.replace(page).catch((error) => {
       return error;
     });
+  }
+
+  DecodeJWT(token: any) {
+    let result: any = [];
+    try {
+      result = jwt_decode(token);
+    } catch (e) {
+      return e;
+    }
+    return result;
+  }
+
+  getDefaultPaginationProps(perPage: number = 5) {
+    return {
+      isBusy: false,
+      currentPage: 1,
+      perPage: perPage,
+      errorMessage: "",
+      totalRows: 0,
+    };
   }
 }
 

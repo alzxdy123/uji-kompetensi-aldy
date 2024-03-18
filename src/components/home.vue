@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="containers">
     <div class="sidebar" v-if="showSidebar">
       <div class="sidebar-head">Uji Kompetensi</div>
       <div class="sidebar-body">

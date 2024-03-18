@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="login">
-      <div class="container">
+      <div class="containers">
         <!-- <div class="image-container"></div> -->
         <form data-vv-scope="login" @submit.prevent="handdleLogin('login')">
           <div class="login-form">
