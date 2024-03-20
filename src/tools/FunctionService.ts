@@ -1,4 +1,4 @@
-import router from "@/router";
+import router from "../router";
 import Crypto from "../tools/crypto";
 import jwt_decode from "jwt-decode";
 // import $ from "jquery";
@@ -12,6 +12,21 @@ class FunctionService {
 
   ReadSessionCustom(key: string) {
     let read: any = localStorage.getItem(key);
+    if (read == "null") {
+      return null;
+    } else {
+      let dencrypt = Crypto.dencrytion(read);
+      if (dencrypt == "" || dencrypt == undefined) {
+        return null;
+      } else {
+        let JsonToData = JSON.parse(dencrypt);
+        return JsonToData;
+      }
+    }
+  }
+
+  ClearSessionCustom(key: string) {
+    let read: any = localStorage.removeItem(key);
     if (read == "null") {
       return null;
     } else {

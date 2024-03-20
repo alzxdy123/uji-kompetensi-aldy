@@ -4,16 +4,34 @@
       <div class="wrappers">
         <div class="head">
           <span>Authorization Parameter Holiday</span>
+          <b-form-input
+            v-model="filter.query"
+            placeholder="Cari"
+            type="text"
+            debounce="500"
+          ></b-form-input>
         </div>
         <div class="body">
           <div class="table">
             <b-table
+              :busy="tableProps.isBusy"
               :fields="tableProps.fields"
               :items="filteredItems"
               :per-page="tableProps.perPage"
               :current-page="tableProps.currentPage"
               fixed
             >
+              <template v-slot:table-busy>
+                <div
+                  id="holidayParameterId"
+                  class="text-center my-2 loading-table"
+                >
+                  <div class="loading-color">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>{{ tableProps.errorMessage }}</strong>
+                  </div>
+                </div>
+              </template>
               <template v-slot:cell(detail)="data">
                 <b-container fluid>
                   <b-row align-h="center">
@@ -65,6 +83,7 @@ export default {
         ...FunctionService.getDefaultPaginationProps(),
         items: [],
         currentPage: 1,
+        isBusy: false,
         perPage: 6,
         fields: [
           {
@@ -107,6 +126,7 @@ export default {
   },
   methods: {
     fetchData() {
+      this.tableProps.isBusy = true
       const params = {
         pageSize: 1000,
         page: 1,
@@ -116,6 +136,7 @@ export default {
       parameterListService
         .holidayParameterAuthorization(params)
         .then((res) => {
+          this.tableProps.isBusy = false
           const items = res.data.data;
           this.tableProps.items = items.map((item) => {
             const authData =

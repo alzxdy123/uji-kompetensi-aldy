@@ -2,6 +2,7 @@ import { AXIOS_LOGIN } from "./server";
 import header from "./header";
 import Crypto from "../tools/crypto";
 import router from "../router";
+import FunctionService from "../tools/FunctionService";
 
 class AuthService {
   AuthLogin(data: any) {
@@ -38,6 +39,25 @@ class AuthService {
 
   ValidationResponseBoolean(data: { data: { code: string } }) {
     return data.data.code === "00";
+  }
+
+  AuthLogout(userID: any) {
+    let config: {};
+    config = header.authHeader();
+    return AXIOS_LOGIN.post(
+      "/admin/v1/auth/signout?username=" + userID,
+      config
+    );
+  }
+
+  logout() {
+    this.AuthLogout(FunctionService.ReadSessionCustom("userID"));
+    FunctionService.ClearSessionCustom("colorMenu");
+    FunctionService.ClearSessionCustom("linkData");
+    FunctionService.ClearSessionCustom("token");
+    FunctionService.ClearSessionCustom("newToken");
+    localStorage.clear();
+    return this.ToPage("/login");
   }
 }
 

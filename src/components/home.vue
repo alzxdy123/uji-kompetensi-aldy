@@ -35,7 +35,7 @@
             <div class="content">language</div>
 
             <div class="content">Username</div>
-            <div class="content">
+            <div class="content" @click="Logout()">
               <i class="jam jam-power log-out"></i>
             </div>
           </div>
@@ -53,6 +53,7 @@
 
 <script>
 import FunctionService from '@/tools/FunctionService';
+import authService from "../service/authService"
 export default {
   data() {
     return {
@@ -64,6 +65,11 @@ export default {
   methods:{
     handleSidebar() {
       this.showSidebar = !this.showSidebar
+    },
+
+    Logout() {
+      authService.logout();
+      // this.$store.dispatch('AuthLogout');
     }
   },
 

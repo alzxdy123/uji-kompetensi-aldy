@@ -23,6 +23,10 @@
             </b-container>
           </b-col>
         </b-row>
+        <div>
+          <button @click="authorize('A')">terima</button>
+          <button @click="authorize('R')">tolak</button>
+        </div>
       </div>
     </div>
   </div>
@@ -102,7 +106,7 @@ export default {
 
     back() {
       return FunctionService.ToPage(
-        "/authorization/parameter-change-authorization/holiday"
+        "/authorization"
       );
     },
 

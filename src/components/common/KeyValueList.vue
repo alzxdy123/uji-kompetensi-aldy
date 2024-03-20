@@ -23,36 +23,17 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: "KeyValueList",
-  props: {
-    keyValues: Object,
-    keySpan: {
-      type: [Number, String],
-      default: 6,
-    },
-    valSpan: {
-      type: [Number, String],
-      default: 6,
-    },
-    diffKeys: {
-      type: Array as () => string[],
-      default: () => [],
-    },
-  },
-  data() {
-    return {
-      editorOptions: {
-        modules: {
-          toolbar: false,
-        },
-      },
-    };
-  },
-  methods: {
-    isDifferent(key: string) {
-      return this.diffKeys.includes(key);
-    },
-  },
-};
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
+@Component
+export default class KeyValueList extends Vue {
+  @Prop(Object) keyValues!: Record<string, any>;
+  @Prop({ type: [Number, String], default: 6 }) keySpan!: number | string;
+  @Prop({ type: [Number, String], default: 6 }) valSpan!: number | string;
+  @Prop({ type: Array, default: () => [] }) diffKeys!: string[];
+
+  isDifferent(key: string): boolean {
+    return this.diffKeys.includes(key);
+  }
+}
 </script>

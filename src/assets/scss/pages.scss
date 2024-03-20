@@ -264,10 +264,16 @@
         height: 10%;
         font-size: 20px;
         font-weight: bold;
+        display: flex;
+        gap: 140px;
 
         span {
           font-size: 20px;
           font-weight: bold;
+        }
+
+        input {
+          width: 200px;
         }
       }
   

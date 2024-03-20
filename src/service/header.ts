@@ -1,4 +1,4 @@
-import FunctionService from "@/tools/FunctionService";
+import FunctionService from "../tools/FunctionService";
 
 export default {
   authHeader() {

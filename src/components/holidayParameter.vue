@@ -79,32 +79,35 @@
 </template>
 
 <script lang="ts">
-import FunctionService from '@/tools/FunctionService';
-import parameterListService from '@/service/parameterListService';
+import { Vue, Component, Watch } from 'vue-property-decorator';
+import FunctionService from '../tools/FunctionService';
+import parameterListService from '../service/parameterListService';
 import moment from 'moment';
 import { BvTableFieldArray } from "bootstrap-vue";
-import { THolidayParameter } from "@/models/masterData";
+import { THolidayParameter } from "../models/masterData";
 import addParameterHoliday from './common/formParameterHoliday.vue';
 import DeleteModal from './common/DeleteModal.vue';
 
-export default {
-  name: "ParameterHariLibur",
-  components: {addParameterHoliday, DeleteModal},
-  data() {
-    return {
-      addShow: false,
-      addTitle: "Tambah",
-      filterQuery: {
-        name: "",
-        year: moment().format("YYYY"),
-      },
-      tableProps: {
-        ...FunctionService.getDefaultPaginationProps(),
-        items: [] as THolidayParameter[],
-        perPage: 4,
-        isBusy: false,
-        fields: [
-          {
+@Component({
+  components: {
+    addParameterHoliday,
+    DeleteModal
+  }
+})
+export default class ParameterHariLibur extends Vue {
+  addShow: boolean = false;
+  addTitle: string = "Tambah";
+  filterQuery = {
+    name: "",
+    year: moment().format("YYYY"),
+  };
+  tableProps = {
+    ...FunctionService.getDefaultPaginationProps(),
+    items: [] as THolidayParameter[],
+    perPage: 4,
+    isBusy: false,
+    fields: [
+    {
             key: "parameterValue1",
             label: "Tanggal",
             sortable: true,
@@ -122,7 +125,7 @@ export default {
           },
           {
             key: "description",
-            label: "Description",
+            label: "Keterangan",
             sortable: true,
           },
           {
@@ -135,184 +138,161 @@ export default {
           },
           {
             key: "delete",
-            label:"Delete",
+            label: "Hapus",
             thStyle: {
               width: "75px",
               textAlign: "center",
             },
           },
-        ] as BvTableFieldArray,
-      },
-      selectedItem: undefined as THolidayParameter | undefined,
-      action: "I",
+    ] as BvTableFieldArray,
+  };
+  selectedItem: THolidayParameter | undefined = undefined;
+  action: string = "I";
+
+  fetchData() {
+    this.tableProps.isBusy = true;
+    const query = {
+      year: this.filterQuery.year,
+      holiday_name: this.filterQuery.name,
     };
-    },
-
-    methods: {
-      fetchData() {
-      this.tableProps.isBusy = true
-      const query = {
-        year: this.filterQuery.year,
-        holiday_name: this.filterQuery.name,
-      };
-      this.tableProps.items = [];
-      parameterListService
-        .getListParameterHoliday(query)
-        .then((res) => {
-          this.tableProps.isBusy = false
-          if (FunctionService.ResultResponse(res)) {
-            const items = res.data.data;
-            console.log(items)
-
-            this.tableProps.items = items;
-          } else {
-            this.$notify({
-
-              text: FunctionService.SimpleLanguage(res.data.message) as string,
-              title: "Error Request",
-              type: "error",
-              duration: 5000,
-            });
-          }
-        })
-        .catch((err) => {
+    this.tableProps.items = [];
+    parameterListService.getListParameterHoliday(query)
+      .then((res) => {
+        this.tableProps.isBusy = false;
+        if (FunctionService.ResultResponse(res)) {
+          const items = res.data.data;
+          console.log(items);
+          this.tableProps.items = items;
+        } else {
           this.$notify({
+            text: FunctionService.SimpleLanguage(res.data.message) as string,
             title: "Error Request",
-            text: err,
             type: "error",
             duration: 5000,
           });
-        });
-    },
-
-      handleAddShow(val: any) {
-        this.addShow = val
-        if(this.addShow) {
-          this.addTitle = "Tutup"
-        } else {
-          this.addTitle ="Tambah"
         }
-      },
-
-      handleDelete(item: any) {
-        this.selectedItem = item;
-        this.$nextTick(() => {
-          this.$bvModal.show("delete-modal");
+      })
+      .catch((err) => {
+        this.$notify({
+          title: "Error Request",
+          text: err,
+          type: "error",
+          duration: 5000,
         });
-      },
+      });
+  }
 
-      handleCancel(modalId: string) {
-        this.selectedItem = undefined;
-        this.$nextTick(() => {
-          this.$bvModal.hide(modalId);
-        });
-      },
+  handleAddShow(val: any) {
+    this.addShow = val;
+    this.addTitle = this.addShow ? "Tutup" : "Tambah";
+  }
 
-      handleConfirmDelete() {
-        this.tableProps.isBusy = true
-      const oldData = {
-        parameterName: this.selectedItem!.parameterName,
-        parameterType: this.selectedItem!.parameterType,
-        parameterValue1: this.selectedItem!.parameterValue1,
-        parameterValue2: this.selectedItem!.parameterValue2,
-        description: this.selectedItem!.description,
-      };
+  handleDelete(item: any) {
+    this.selectedItem = item;
+    this.$nextTick(() => {
+      this.$bvModal.show("delete-modal");
+    });
+  }
 
-      const reqBody = {
-        actionType: "D",
-        createdBy: FunctionService.ReadSessionCustom("userID"),
-        dataType: "PARAM_HOLIDAY",
-        oldData: JSON.stringify(oldData),
-      };
+  handleCancel(modalId: string) {
+    this.selectedItem = undefined;
+    this.$nextTick(() => {
+      this.$bvModal.hide(modalId);
+    });
+  }
 
-      parameterListService
-        .postHolidayParameterAuthorizationRequest(reqBody)
-        .then((res) => {
-          this.tableProps.isBusy = false
-          if (FunctionService.ResultResponse(res)) {
-            this.$notify({
-              title: "Success",
-              text: res.data.message,
-              type: "success",
-              duration: 5000,
-            });
-            this.$emit("close");
-          } else {
-            this.$notify({
-              title: "Error",
-              text: res.data.message,
-              type: "error",
-              duration: 5000,
-            });
-          }
-        })
-        .catch((err) => {
+  handleConfirmDelete() {
+    this.tableProps.isBusy = true;
+    const oldData = {
+      parameterName: this.selectedItem!.parameterName,
+      parameterType: this.selectedItem!.parameterType,
+      parameterValue1: this.selectedItem!.parameterValue1,
+      parameterValue2: this.selectedItem!.parameterValue2,
+      description: this.selectedItem!.description,
+    };
+
+    const reqBody = {
+      actionType: "D",
+      createdBy: FunctionService.ReadSessionCustom("userID"),
+      dataType: "PARAM_HOLIDAY",
+      oldData: JSON.stringify(oldData),
+    };
+
+    parameterListService.postHolidayParameterAuthorizationRequest(reqBody)
+      .then((res) => {
+        this.tableProps.isBusy = false;
+        if (FunctionService.ResultResponse(res)) {
+          this.$notify({
+            title: "Success",
+            text: res.data.message,
+            type: "success",
+            duration: 5000,
+          });
+          this.$emit("close");
+        } else {
           this.$notify({
             title: "Error",
-            text: err,
+            text: res.data.message,
             type: "error",
             duration: 5000,
           });
+        }
+      })
+      .catch((err) => {
+        this.$notify({
+          title: "Error",
+          text: err,
+          type: "error",
+          duration: 5000,
         });
-      this.$bvModal.hide("delete-modal");
-    },
-
-      handleEdit(item: THolidayParameter) {
-        this.action = "U";
-        this.selectedItem = {
-          ...item,
-        };
-        this.addShow = false;
-        this.$nextTick(() => {
-          this.handleAddShow(true)
-        });
-      },
-
-      handleAdd() {
-        this.action = "I";
-        this.selectedItem = {
-          description: "",
-          parameterName: "holiday",
-          parameterType: "holiday",
-          parameterValue1: "",
-          parameterValue2: "",
-        };
-        this.$nextTick(() => {
-          this.handleAddShow(true)
-        });
-      },
-    },
-
-    mounted() {
-      this.fetchData()
-    },
-
-    computed: {
-      totalRows() {
-        return this.tableProps.items.length;
-      },
-      pastThreeYears() {
-        const currentYear = parseInt(moment().format("YYYY"));
-
-        return [currentYear, currentYear - 1, currentYear - 2];
-      },
-      showForm(): boolean {
-        return this.action == "I" || this.action == "U";
-      },
-    },
-
-    watch: {
-      filterQuery: {
-        handler: function (newVal, oldVal) {
-          this.tableProps.currentPage = 1;
-          this.fetchData();
-        },
-        deep: true,
-      },
-    },
+      });
+    this.$bvModal.hide("delete-modal");
   }
-</script>
 
-<style>
-@import "../assets/scss/pages.scss";
-</style>
+  handleEdit(item: THolidayParameter) {
+    this.action = "U";
+    this.selectedItem = { ...item };
+    this.addShow = false;
+    this.$nextTick(() => {
+      this.handleAddShow(true);
+    });
+  }
+
+  handleAdd() {
+    this.action = "I";
+    this.selectedItem = {
+      description: "",
+      parameterName: "holiday",
+      parameterType: "holiday",
+      parameterValue1: "",
+      parameterValue2: "",
+    };
+    this.$nextTick(() => {
+      this.handleAddShow(true);
+    });
+  }
+
+  @Watch('filterQuery', { deep: true })
+  onFilterQueryChanged(newVal: any, oldVal: any) {
+    this.tableProps.currentPage = 1;
+    this.fetchData();
+  }
+
+  mounted() {
+    this.fetchData();
+  }
+
+  get pastThreeYears() {
+    const currentYear = parseInt(moment().format("YYYY"));
+    return [currentYear, currentYear - 1, currentYear - 2];
+  }
+
+  get totalRows() {
+    return this.tableProps.items.length;
+  }
+
+  get showForm() {
+    return this.action == "I" || this.action == "U";
+  }
+}
+</script>

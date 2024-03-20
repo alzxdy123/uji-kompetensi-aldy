@@ -49,28 +49,23 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: "DeleteModal",
-  props: {
-    modalId: {
-      type: String,
-      default: "delete-modal",
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  methods: {
-    handleOk() {
-      this.$emit("ok");
-    },
-    handleCancel() {
-      this.$emit("cancel");
-    },
-    handleClose() {
-      this.$emit("close");
-    },
-  },
-};
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
+@Component
+export default class DeleteModal extends Vue {
+  @Prop({ type: String, default: 'delete-modal' }) modalId!: string;
+  @Prop({ type: Boolean, default: false }) loading!: boolean;
+
+  handleOk(): void {
+    (this as any).$emit('ok');
+  }
+
+  handleCancel(): void {
+    (this as any).$emit('cancel');
+  }
+
+  handleClose(): void {
+    (this as any).$emit('close');
+  }
+}
 </script>
