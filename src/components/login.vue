@@ -99,7 +99,7 @@ export default {
           this.messageChaptca = "Chaptca error"
           return;
         } else {
-          if (this.chaptcha === this.InputCaptcha) {
+          if (this.InputCaptcha === this.chaptchaShow ) {
             this.messageChaptca = ""
             let loginData = {
               username: this.user.username,
@@ -118,13 +118,38 @@ export default {
             .then((result) => {
               this.isError = false
               if (FunctionService.ResultResponse(result)) {
+                this.isBusy = false;
+                this.loading = true;
+                result.data.data.map((data) => {
+                  FunctionService.SaveSessionCustom("newToken", data.token);
+                });
+
+                AuthService.SaveSessionCustom(
+                  "firstTimeLogin",
+                  result.data.data[0].firstTimeLogin
+                );
+
+                AuthService.SaveSessionCustom(
+                  "token",
+                  result.data.data[0].token
+                );
+
+                AuthService.SaveSessionCustom(
+                  "userInfo",
+                  result.data.data[0]
+                );
+
+                AuthService.SaveSessionCustom("userID", this.user.username);
+
                 this.$notify({
                   title: 'Success log in',
                   text: 'Success',
                   type: 'success',
                   duration: 5000
                 })
-                console.log("succes")
+
+                AuthService.ToPage("/");
+
               } else {
                 throw new Error(result.data.message);
               }

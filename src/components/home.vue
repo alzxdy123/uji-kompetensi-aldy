@@ -47,6 +47,7 @@
         </div>
       </div>
     </div>
+    <notifications class="notifications" />
   </div>
 </template>
 
@@ -85,6 +86,13 @@ export default {
           text: "holiday parameter",
           icon: "jam jam-calendar",
           href: "/holiday-parameter",
+          children: []
+        },
+        {
+          name: "authorization",
+          text: "Authorization",
+          icon: "jam jam-calendar",
+          href: "/authorization",
           children: []
         }
       ]

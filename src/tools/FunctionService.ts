@@ -1,6 +1,7 @@
 import router from "@/router";
 import Crypto from "../tools/crypto";
 import jwt_decode from "jwt-decode";
+// import $ from "jquery";
 
 class FunctionService {
   SaveSessionCustom(key: string, value: any) {
@@ -119,6 +120,80 @@ class FunctionService {
       totalRows: 0,
     };
   }
+
+  hasSubstring(strA: string, strB: string) {
+    if (!strA || !strB) return true;
+    return strA.toLowerCase().includes(strB.toLowerCase());
+  }
+
+  parseJSONSafe(jsonString: any) {
+    try {
+      if (typeof jsonString === "string") {
+        if (
+          jsonString.trim().charAt(0) === "{" &&
+          jsonString.trim().slice(-1) === "}"
+        ) {
+          const parsedJson = JSON.parse(jsonString);
+
+          if (typeof parsedJson === "object" && parsedJson !== null) {
+            for (const key in parsedJson) {
+              if (typeof parsedJson[key] === "string") {
+                parsedJson[key] = this.parseJSONSafe(parsedJson[key]);
+              }
+            }
+          }
+
+          return parsedJson || jsonString;
+        } else {
+          return jsonString;
+        }
+      } else {
+        return jsonString;
+      }
+    } catch (error: any) {
+      console.error("Error parsing JSON:", error.message);
+      return jsonString;
+    }
+  }
+
+  getAuthStatusTextKey(status: string) {
+    switch (status) {
+      case "A":
+        return "Di Setujui";
+      case "R":
+        return "Di Tolak";
+      default:
+        return "Menunggu Persutujuan";
+    }
+  }
+
+  getAuthStatusTextColor(status: string) {
+    switch (status) {
+      case "A":
+        return "text-success";
+      case "R":
+        return "text-danger";
+      default:
+        return "text-warning";
+    }
+  }
+
+  getDiffKeys(obj1: Record<string, any>, obj2: Record<string, any>): string[] {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    const commonKeys = keys1.filter((key) => keys2.includes(key));
+
+    const differentKeys = commonKeys.filter((key) => obj1[key] !== obj2[key]);
+
+    return differentKeys;
+  }
+
+  // ErrorTableClose(id: any) {
+  //   $(document).ready(function () {
+  //     $(".loading-table#" + id).removeClass("active");
+  //   });
+  // }
 }
 
 export default new FunctionService();

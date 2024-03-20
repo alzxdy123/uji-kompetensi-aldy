@@ -3,6 +3,7 @@
   padding: 0;
 }
 
+
 .dashboard {
   width: 100%;
   height: 100%;
@@ -87,8 +88,7 @@
 .container-holiday-parameter {
   .holiday-parameter {
     width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 15px;
     height: max-content;
     background-color: white;
     box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
@@ -106,8 +106,27 @@
       .header {
         width: 100%;
         height: 10%;
-        font-size: 20px;
-        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        span {
+          font-size: 20px;
+          font-weight: bold;
+        }
+
+        .filter {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 20px;
+        }
+
+        button {
+          padding: 3px 50px 3px 50px;
+          background-color: black;
+          color: white;
+        }
       }
   
       .body {
@@ -119,6 +138,7 @@
   
         .table {
           width: 100%;
+          height: max-content;
 
           .table-content {
             text-align: center;
@@ -136,6 +156,8 @@
 
         .page{
           width: 200px;
+          padding-top: 0 !important;
+          margin-top: 0 !important;
         }
 
         .page .page-item.active .page-link {
@@ -147,19 +169,18 @@
   }
 
   .tambah-data-container {
-    margin-top: 30px;
     width: 100%;
-    height: 250px;
+    padding: 0 0 20px 0;  
 
     .tambah-data-head {
       width: 100%;
-      height: 60px;
+      height: 50px;
       background-color: white;
       display: flex;
-      gap: 70px;
-      justify-content: start;
+      justify-content: space-between;
       align-items: center;
       padding-left: 30px;
+      padding-right: 30px;
       box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
 
       span {       
@@ -167,25 +188,122 @@
         font-weight: bold;
       }
 
-      button {
-        padding: 3px 50px 3px 50px;
-        background-color: black;
-        color: white;
+      .button-wrapper {
+        display: flex;
+        gap: 20px;
+        padding: 0 10px 0 10px;
+
+        .add-button {
+          padding: 3px 50px 3px 50px;
+          background-color: black;
+          color: white;
+        }
+        .reset-button {
+          padding: 3px 50px 3px 50px;
+          border: 1px solid black;
+          color: black;
+          background-color: white;
+        }
       }
     }
 
     .tambah-data-body {
       width: 100%;
-      height: 70px;
-      margin-top: 10px;
+      height: 130px;
+      margin-top: 5px;
+
+      .add-holiday-parameter {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;        display: flex;
+        justify-content: space-evenly;
+        align-items: end;
+
+        .holiday-input {
+          height: 80px;
+          display: flex;
+        }
+
+        .holiday-desc {
+          width: 40%;
+          height: 80px;
+          display: flex;
+          flex-direction: column;
+          input {
+            width: 100%;
+          }
+        }
+      }
     }
   }
   
-  .add-holiday-parameter {
+}
+
+.authorization {
+  .authorization-container {
     width: 100%;
-    height: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    height: max-content;
     background-color: white;
     box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
     display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .wrappers {
+      width: 95%;
+      height: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      
+      .head {
+        width: 100%;
+        height: 10%;
+        font-size: 20px;
+        font-weight: bold;
+
+        span {
+          font-size: 20px;
+          font-weight: bold;
+        }
+      }
+  
+      .body {
+        width: 100%;
+        height: 85%;
+        display: flex;
+        justify-content: center;
+        align-items: start;
+  
+        .table {
+          width: 100%;
+
+          .table-content {
+            text-align: center;
+            cursor: pointer;
+            font-size: 15px;
+          }
+        }
+      }
+
+      .footer {
+        width: 100%;
+        height: 5%;
+        display: flex;
+        justify-content: end;
+
+        .page{
+          width: 200px;
+        }
+
+        .page .page-item.active .page-link {
+          background-color: black;
+          color: white; /* Set text color for better visibility */
+        }
+      }
+    }
   }
 }

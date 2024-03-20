@@ -4,6 +4,9 @@ import dashboard from "./components/dashboard.vue";
 import login from "./components/login.vue";
 import home from "./components/home.vue";
 import holidayParameter from "./components/holidayParameter.vue";
+import authorization from "./components/authorization.vue";
+import authorizationDetail from "./components/authorizationDetail.vue";
+import Loading from "./components/common/Loading.vue";
 
 Vue.use(VueRouter);
 
@@ -23,6 +26,20 @@ const routes: Array<RouteConfig> = [
         name: "holidayParameter",
         component: holidayParameter,
       },
+      {
+        path: "/authorization",
+        name: "authorization",
+        component: authorization,
+      },
+      {
+        path: "/authorization/detail",
+        name: "authorizationDetail",
+        component: authorizationDetail,
+      },
+      {
+        path: "/loading",
+        component: Loading,
+      },
     ],
   },
   {
@@ -38,19 +55,20 @@ const router = new VueRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ["/login"];
-//   const authRequired = !publicPages.includes(to.path);
-//   if (authRequired) {
-//     return next({
-//       path: "/login",
-//       query: {
-//         returnUrl: to.path,
-//       },
-//     });
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login"];
+  const authRequired = !publicPages.includes(to.path);
+  let token = localStorage.getItem("token");
+  if (authRequired && token == null) {
+    return next({
+      path: "/login",
+      query: {
+        returnUrl: to.path,
+      },
+    });
+  } else {
+    next();
+  }
+});
 
 export default router;

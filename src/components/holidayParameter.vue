@@ -1,16 +1,40 @@
 <template>
   <div class="container-holiday-parameter">
+    <addParameterHoliday
+      :parameter="selectedItem"
+      :action-type="action"
+      @handleShow="handleAddShow(false)"
+      @closeShow="handleAddShow(false)"
+      v-if="addShow"
+    />
     <div class="holiday-parameter">
       <div class="wrappers">
-        <div class="header">Holiday Parameter</div>
+        <div class="header">
+          <span>Holiday Parameter</span>
+          <div class="filter">
+            <b-form-input
+              v-model="filterQuery.name"
+              placeholder="Cari"
+              type="text"
+              debounce="500"
+            ></b-form-input>
+            <b-form-select
+              v-model="filterQuery.year"
+              placeholder="Tahun"
+              :options="pastThreeYears"
+            ></b-form-select>
+          </div>
+          <button @click="handleAdd()">Tambah Data</button>
+        </div>
         <div class="body">
           <div class="table">
             <b-table
-              :fields="tableProps.fields"
+              :busy="tableProps.isBusy"
               :items="tableProps.items"
-              :current-page="currentPage"
-              :per-page="perPage"
-              :busy="isBusy"
+              :fields="tableProps.fields"
+              :current-page="tableProps.currentPage"
+              :per-page="tableProps.perPage"
+              fixed
             >
               <template v-slot:table-busy>
                 <div
@@ -24,13 +48,13 @@
                 </div>
               </template>
               <template #cell(edit)="data">
-                <div class="table-content">
-                  <i class="jam jam-write" @click="Edit(data.item)"></i>
+                <div class="table-content" @click="handleEdit(data.item)">
+                  <i class="jam jam-write"></i>
                 </div>
               </template>
               <template #cell(delete)="data">
-                <div class="table-content">
-                  <i class="jam jam-trash-f" @click="Delete(data.item)"></i>
+                <div class="table-content" @click="handleDelete(data.item)">
+                  <i class="jam jam-trash-f"></i>
                 </div>
               </template>
             </b-table>
@@ -38,50 +62,47 @@
         </div>
         <div class="footer">
           <b-pagination
-            v-model="currentPage"
+            v-model="tableProps.currentPage"
+            :per-page="tableProps.perPage"
             :total-rows="totalRows"
-            :per-page="perPage"
-            align="fill"
-            size="sm"
             class="page"
           ></b-pagination>
         </div>
       </div>
     </div>
-    <div class="tambah-data-container">
-      <div class="tambah-data-head">
-        <span>Tambah Data</span>
-        <button @click="handleAdd()">{{ addTittle }}</button>
-      </div>
-      <div class="tambah-data-body" v-if="addShow">
-        <addParameterHolidayVue
-          :parameter="selectedItem"
-          :action-type="action"
-        />
-      </div>
-    </div>
+    <DeleteModal
+      @ok="handleConfirmDelete"
+      @cancel="handleCancel('delete-modal')"
+      @close="handleCancel('delete-modal')"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import FunctionService from '@/tools/FunctionService';
-import parameterService from '@/service/parameterService';
-import addParameterHolidayVue from './common/addParameterHoliday.vue';
-import { THolidayParameter } from '@/models/masterData';
+import parameterListService from '@/service/parameterListService';
+import moment from 'moment';
 import { BvTableFieldArray } from "bootstrap-vue";
-import moment from "moment";
+import { THolidayParameter } from "@/models/masterData";
+import addParameterHoliday from './common/formParameterHoliday.vue';
+import DeleteModal from './common/DeleteModal.vue';
+
 export default {
-  components: {
-    addParameterHolidayVue
-  },
+  name: "ParameterHariLibur",
+  components: {addParameterHoliday, DeleteModal},
   data() {
     return {
-      isBusy: false,
       addShow: false,
-      addTittle: "Tambah",
+      addTitle: "Tambah",
+      filterQuery: {
+        name: "",
+        year: moment().format("YYYY"),
+      },
       tableProps: {
         ...FunctionService.getDefaultPaginationProps(),
         items: [] as THolidayParameter[],
+        perPage: 4,
+        isBusy: false,
         fields: [
           {
             key: "parameterValue1",
@@ -114,7 +135,7 @@ export default {
           },
           {
             key: "delete",
-            label: "Hapus",
+            label:"Delete",
             thStyle: {
               width: "75px",
               textAlign: "center",
@@ -122,70 +143,174 @@ export default {
           },
         ] as BvTableFieldArray,
       },
-      year: "2024",
-      filterQuery: {
-        name: "",
-        year: moment().format("YYYY"),
-      },
-      currentPage: 1,
-      perPage: 5,
-      action: "I",
       selectedItem: undefined as THolidayParameter | undefined,
-    }
-  },
-  methods: {
-  fetchData() {
-      this.isBusy = true
-      parameterService.getListParameterHoliday(this.year)
-      .then((result) => {
-        this.tableProps.items = result.data.data
-        this.isBusy = false
-      })
+      action: "I",
+    };
     },
 
-    Edit(data: any) {
-      console.log("edit", data)
-    },
-
-    Delete(data: any) {
-      console.log("delete", data)
-    },
-    // handleAddButton() {
-    //   this.addShow = !this.addShow
-    //   if (!this.addShow) {
-    //     this.addTittle = "Tambah"
-    //   } else {
-    //     this.addTittle = "Tutup"
-    //   }
-    // },
-    handleAdd() {
-      this.action = "I";
-      if (!this.addShow) {
-        this.addTittle = "Tambah"
-      } else {
-        this.addTittle = "Tutup"
-      }
-      this.selectedItem = {
-        description: "",
-        parameterName: "holiday",
-        parameterType: "holiday",
-        parameterValue1: "",
-        parameterValue2: "",
+    methods: {
+      fetchData() {
+      this.tableProps.isBusy = true
+      const query = {
+        year: this.filterQuery.year,
+        holiday_name: this.filterQuery.name,
       };
-      this.$nextTick(() => {
-        this.addShow = !this.addShow
-      });
+      this.tableProps.items = [];
+      parameterListService
+        .getListParameterHoliday(query)
+        .then((res) => {
+          this.tableProps.isBusy = false
+          if (FunctionService.ResultResponse(res)) {
+            const items = res.data.data;
+            console.log(items)
+
+            this.tableProps.items = items;
+          } else {
+            this.$notify({
+
+              text: FunctionService.SimpleLanguage(res.data.message) as string,
+              title: "Error Request",
+              type: "error",
+              duration: 5000,
+            });
+          }
+        })
+        .catch((err) => {
+          this.$notify({
+            title: "Error Request",
+            text: err,
+            type: "error",
+            duration: 5000,
+          });
+        });
     },
-  },
-  mounted() {
-    this.fetchData()
-  },
-  computed: {
-    totalRows() {
-      return this.tableProps.items.length;
+
+      handleAddShow(val: any) {
+        this.addShow = val
+        if(this.addShow) {
+          this.addTitle = "Tutup"
+        } else {
+          this.addTitle ="Tambah"
+        }
+      },
+
+      handleDelete(item: any) {
+        this.selectedItem = item;
+        this.$nextTick(() => {
+          this.$bvModal.show("delete-modal");
+        });
+      },
+
+      handleCancel(modalId: string) {
+        this.selectedItem = undefined;
+        this.$nextTick(() => {
+          this.$bvModal.hide(modalId);
+        });
+      },
+
+      handleConfirmDelete() {
+        this.tableProps.isBusy = true
+      const oldData = {
+        parameterName: this.selectedItem!.parameterName,
+        parameterType: this.selectedItem!.parameterType,
+        parameterValue1: this.selectedItem!.parameterValue1,
+        parameterValue2: this.selectedItem!.parameterValue2,
+        description: this.selectedItem!.description,
+      };
+
+      const reqBody = {
+        actionType: "D",
+        createdBy: FunctionService.ReadSessionCustom("userID"),
+        dataType: "PARAM_HOLIDAY",
+        oldData: JSON.stringify(oldData),
+      };
+
+      parameterListService
+        .postHolidayParameterAuthorizationRequest(reqBody)
+        .then((res) => {
+          this.tableProps.isBusy = false
+          if (FunctionService.ResultResponse(res)) {
+            this.$notify({
+              title: "Success",
+              text: res.data.message,
+              type: "success",
+              duration: 5000,
+            });
+            this.$emit("close");
+          } else {
+            this.$notify({
+              title: "Error",
+              text: res.data.message,
+              type: "error",
+              duration: 5000,
+            });
+          }
+        })
+        .catch((err) => {
+          this.$notify({
+            title: "Error",
+            text: err,
+            type: "error",
+            duration: 5000,
+          });
+        });
+      this.$bvModal.hide("delete-modal");
+    },
+
+      handleEdit(item: THolidayParameter) {
+        this.action = "U";
+        this.selectedItem = {
+          ...item,
+        };
+        this.addShow = false;
+        this.$nextTick(() => {
+          this.handleAddShow(true)
+        });
+      },
+
+      handleAdd() {
+        this.action = "I";
+        this.selectedItem = {
+          description: "",
+          parameterName: "holiday",
+          parameterType: "holiday",
+          parameterValue1: "",
+          parameterValue2: "",
+        };
+        this.$nextTick(() => {
+          this.handleAddShow(true)
+        });
+      },
+    },
+
+    mounted() {
+      this.fetchData()
+    },
+
+    computed: {
+      totalRows() {
+        return this.tableProps.items.length;
+      },
+      pastThreeYears() {
+        const currentYear = parseInt(moment().format("YYYY"));
+
+        return [currentYear, currentYear - 1, currentYear - 2];
+      },
+      showForm(): boolean {
+        return this.action == "I" || this.action == "U";
+      },
+    },
+
+    watch: {
+      filterQuery: {
+        handler: function (newVal, oldVal) {
+          this.tableProps.currentPage = 1;
+          this.fetchData();
+        },
+        deep: true,
+      },
     },
   }
-}
 </script>
 
 <style>
