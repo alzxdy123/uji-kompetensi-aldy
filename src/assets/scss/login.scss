@@ -3,6 +3,33 @@
   margin: 0;
 }
 
+.bv-no-focus-ring {
+  .was-validated .form-control:invalid,
+  .form-control.is-invalid {
+    background-image: none;
+  }
+
+  .was-validated .form-control:valid,
+  .form-control.is-valid {
+    background-image: none;
+    border-color: #053364;
+  }
+
+  .was-validated .form-control:valid:focus,
+  .form-control.is-valid:focus {
+    border-color: #053364;
+  }
+
+  .invalid-feedback {
+    text-align: left;
+    position: absolute;
+  }
+
+  label {
+    margin-top: 0;
+  }
+}
+
 .notifications {
   top: 14px !important;
   right: 14px !important;
@@ -16,26 +43,54 @@
   align-items: center;
 
   .containers {
-    width: 400px;
+    width: 60%;
     height: 500px;
     box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+    
+    .image-container {
+      width: 600px;
+      height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+
+      .wrappers {
+        color: white;
+        width: 80%;
+        margin-top: 70px;
+         span{
+          font-size: 25px;
+          font-weight: bold;
+         }
+
+         .logo {
+          margin-top: 20px;
+         }
+      }
+    }
 
     .login-form {
       height: 500px;
       font-weight: 550;
       font-size: 14px;
+      width: 80%;
 
       .login-head {
         display: flex;
         justify-content: center;
         align-items: end;
         width: 100%;
-        height: 10%;
+        height: 20%;
+
+        h2 {
+          font-weight: bold;
+        }
       }
 
       .login-body {
         width: 100%;
-        height: 70%;
+        height: 60%;
         display: flex;
         gap: 30px;
         justify-content: center;

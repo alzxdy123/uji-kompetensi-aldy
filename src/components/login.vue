@@ -2,8 +2,22 @@
   <div>
     <div class="login">
       <div class="containers">
-        <!-- <div class="image-container"></div> -->
-        <form data-vv-scope="login" @submit.prevent="handdleLogin('login')">
+        <div class="image-container">
+          <div class="wrappers">
+            <span>Ujian Kompetensi Aldy Balya</span>
+            <div class="logo">
+              <img
+                src="https://pactindo.com/home/assets/img/logos/logo-pac-white.svg"
+                style="width: 80px !important;"
+              />
+            </div>
+          </div>
+        </div>
+        <form
+          data-vv-scope="login"
+          @submit.prevent="handdleLogin('login')"
+          style="width: 100%; display: flex; justify-content: center; align-items: center;"
+        >
           <div class="login-form">
             <div class="login-head">
               <h2>Login</h2>
@@ -11,27 +25,41 @@
             <div class="login-body">
               <span style="color: red;">{{ errorMessage }}</span>
               <div class="group-form">
-                <label>Username</label>
-                <input
-                  type="text"
-                  v-model="user.username"
+                <b-form-input
                   id="username"
-                  name="username"
+                  v-model="user.username"
                   v-validate="{ required: true }"
-                  :class="{'error-input': isError}"
-                />
+                  name="username"
+                  type="text"
+                  :class="{
+                        'is-invalid': true && errors.has('login.username'),
+                      }"
+                >
+                </b-form-input>
+                <b-form-invalid-feedback>
+                  Username Di Wajibkan
+                </b-form-invalid-feedback>
                 <!-- <span>{{ errorMessage }}</span> -->
               </div>
               <div class="group-form">
                 <label>Password</label>
-                <input
-                  type="password"
+                <b-form-input
+                  id="passwords"
                   v-model="user.password"
-                  id="password"
-                  name="password"
                   v-validate="{ required: true }"
-                  :class="{'error-input': isError}"
-                />
+                  :class="{
+                        'is-invalid': true && errors.has('login.password'),
+                      }"
+                  class="form-control"
+                  name="password"
+                  type="password"
+                >
+                </b-form-input>
+                <!-- <i class="jam jam-eye show-eye"></i>
+                <i class="jam jam-eye-close hide-eye"></i> -->
+                <b-form-invalid-feedback>
+                  Password Di wajibkan
+                </b-form-invalid-feedback>
                 <!-- <span>{{ errorMessage }}</span> -->
               </div>
               <div class="group-form-chaptca">

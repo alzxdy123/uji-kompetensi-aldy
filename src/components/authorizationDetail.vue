@@ -23,9 +23,28 @@
             </b-container>
           </b-col>
         </b-row>
-        <div>
-          <button @click="authorize('A')">terima</button>
-          <button @click="authorize('R')">tolak</button>
+        <div
+          style="width: 100%; display: flex; justify-content: space-between; margin-top: 30px;"
+        >
+          <router-link
+            to="/authorization"
+            style="background-color: black; padding: 5px 20px 5px 20px; color: white;"
+            >Back</router-link
+          >
+          <div style="display: flex; gap:20px;">
+            <button
+              style="padding: 5px 40px 5px 40px;  background-color: white;"
+              @click="authorize('R')"
+            >
+              Tolak
+            </button>
+            <button
+              style="padding: 5px 30px 5px 30px; background-color: black; color: white"
+              @click="authorize('A')"
+            >
+              Terima
+            </button>
+          </div>
         </div>
       </div>
     </div>

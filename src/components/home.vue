@@ -32,9 +32,7 @@
             <div class="block"></div>
           </div>
           <div class="navbar-content">
-            <div class="content">language</div>
-
-            <div class="content">Username</div>
+            <div class="content">{{Username}}</div>
             <div class="content" @click="Logout()">
               <i class="jam jam-power log-out"></i>
             </div>
@@ -58,7 +56,8 @@ export default {
   data() {
     return {
       showSidebar: true,
-      router: this.$route
+      router: this.$route,
+      Username:""
     }
   },
 
@@ -75,6 +74,7 @@ export default {
 
   mounted() {
     FunctionService.ToPage("/dashboard")
+    this.Username = FunctionService.ReadSessionCustom("userID")
   },
 
   computed: {
@@ -97,7 +97,7 @@ export default {
         {
           name: "authorization",
           text: "Authorization",
-          icon: "jam jam-calendar",
+          icon: "jam jam-user-circle",
           href: "/authorization",
           children: []
         }
@@ -108,5 +108,5 @@ export default {
 </script>
 
 <style>
-@import "../assets//scss/home.scss"
+@import "../assets/scss/home.scss"
 </style>
